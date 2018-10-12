@@ -17,9 +17,9 @@ out = './RP/'
 cmap = cm.get_cmap('Spectral') 
 
 np.random.seed(0)
-digits = pd.read_hdf('./BASE/datasets.hdf','digits')
-digitsX = digits.drop('Class',1).copy().values
-digitsY = digits['Class'].copy().values
+cars = pd.read_hdf('./BASE/datasets.hdf','cars')
+carsX = cars.drop('Class',1).copy().values
+carsY = cars['Class'].copy().values
 
 madelon = pd.read_hdf('./BASE/datasets.hdf','madelon')        
 madelonX = madelon.drop('Class',1).copy().values
@@ -27,7 +27,7 @@ madelonY = madelon['Class'].copy().values
 
 
 madelonX = StandardScaler().fit_transform(madelonX)
-digitsX= StandardScaler().fit_transform(digitsX)
+carsX= StandardScaler().fit_transform(carsX)
 
 clusters =  [2,5,10,15,20,25,30,35,40]
 dims = [2,5,10,15,20,25,30,35,40,45,50,55,60]
@@ -45,9 +45,9 @@ tmp.to_csv(out+'madelon scree1.csv')
 tmp = defaultdict(dict)
 for i,dim in product(range(10),dims):
     rp = SparseRandomProjection(random_state=i, n_components=dim)
-    tmp[dim][i] = pairwiseDistCorr(rp.fit_transform(digitsX), digitsX)
+    tmp[dim][i] = pairwiseDistCorr(rp.fit_transform(carsX), carsX)
 tmp =pd.DataFrame(tmp).T
-tmp.to_csv(out+'digits scree1.csv')
+tmp.to_csv(out+'cars scree1.csv')
 
 
 tmp = defaultdict(dict)
@@ -62,10 +62,10 @@ tmp.to_csv(out+'madelon scree2.csv')
 tmp = defaultdict(dict)
 for i,dim in product(range(10),dims):
     rp = SparseRandomProjection(random_state=i, n_components=dim)
-    rp.fit(digitsX)  
-    tmp[dim][i] = reconstructionError(rp, digitsX)
+    rp.fit(carsX)  
+    tmp[dim][i] = reconstructionError(rp, carsX)
 tmp =pd.DataFrame(tmp).T
-tmp.to_csv(out+'digits scree2.csv')
+tmp.to_csv(out+'cars scree2.csv')
 
 #%% Data for 2
 
@@ -86,9 +86,9 @@ mlp = MLPClassifier(activation='relu',max_iter=2000,early_stopping=True,random_s
 pipe = Pipeline([('rp',rp),('NN',mlp)])
 gs = GridSearchCV(pipe,grid,verbose=10,cv=5)
 
-gs.fit(digitsX,digitsY)
+gs.fit(carsX,carsY)
 tmp = pd.DataFrame(gs.cv_results_)
-tmp.to_csv(out+'digits dim red.csv')
+tmp.to_csv(out+'cars dim red.csv')
 raise
 #%% data for 3
 # Set this from chart 2 and dump, use clustering script to finish up
@@ -104,9 +104,9 @@ madelon2.to_hdf(out+'datasets.hdf','madelon',complib='blosc',complevel=9)
 
 dim = 60
 rp = SparseRandomProjection(n_components=dim,random_state=5)
-digitsX2 = rp.fit_transform(digitsX)
-digits2 = pd.DataFrame(np.hstack((digitsX2,np.atleast_2d(digitsY).T)))
-cols = list(range(digits2.shape[1]))
+carsX2 = rp.fit_transform(carsX)
+cars2 = pd.DataFrame(np.hstack((carsX2,np.atleast_2d(carsY).T)))
+cols = list(range(cars2.shape[1]))
 cols[-1] = 'Class'
-digits2.columns = cols
-digits2.to_hdf(out+'datasets.hdf','digits',complib='blosc',complevel=9)
+cars2.columns = cols
+cars2.to_hdf(out+'datasets.hdf','cars',complib='blosc',complevel=9)

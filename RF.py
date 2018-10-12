@@ -16,9 +16,9 @@ if __name__ == '__main__':
     out = './RF/'
     
     np.random.seed(0)
-    digits = pd.read_hdf('./BASE/datasets.hdf','digits')
-    digitsX = digits.drop('Class',1).copy().values
-    digitsY = digits['Class'].copy().values
+    cars = pd.read_hdf('./BASE/datasets.hdf','cars')
+    carsX = cars.drop('Class',1).copy().values
+    carsY = cars['Class'].copy().values
     
     madelon = pd.read_hdf('./BASE/datasets.hdf','madelon')        
     madelonX = madelon.drop('Class',1).copy().values
@@ -26,7 +26,7 @@ if __name__ == '__main__':
     
     
     madelonX = StandardScaler().fit_transform(madelonX)
-    digitsX= StandardScaler().fit_transform(digitsX)
+    carsX= StandardScaler().fit_transform(carsX)
     
     clusters =  [2,5,10,15,20,25,30,35,40]
     dims = [2,5,10,15,20,25,30,35,40,45,50,55,60]
@@ -35,13 +35,13 @@ if __name__ == '__main__':
     
     rfc = RandomForestClassifier(n_estimators=100,class_weight='balanced',random_state=5,n_jobs=7)
     fs_madelon = rfc.fit(madelonX,madelonY).feature_importances_ 
-    fs_digits = rfc.fit(digitsX,digitsY).feature_importances_ 
+    fs_cars = rfc.fit(carsX,carsY).feature_importances_ 
     
     tmp = pd.Series(np.sort(fs_madelon)[::-1])
     tmp.to_csv(out+'madelon scree.csv')
     
-    tmp = pd.Series(np.sort(fs_digits)[::-1])
-    tmp.to_csv(out+'digits scree.csv')
+    tmp = pd.Series(np.sort(fs_cars)[::-1])
+    tmp.to_csv(out+'cars scree.csv')
     
     #%% Data for 2
     filtr = ImportanceSelect(rfc)
@@ -60,9 +60,9 @@ if __name__ == '__main__':
     pipe = Pipeline([('filter',filtr),('NN',mlp)])
     gs = GridSearchCV(pipe,grid,verbose=10,cv=5)
     
-    gs.fit(digitsX,digitsY)
+    gs.fit(carsX,carsY)
     tmp = pd.DataFrame(gs.cv_results_)
-    tmp.to_csv(out+'digits dim red.csv')
+    tmp.to_csv(out+'cars dim red.csv')
 #    raise
     #%% data for 3
     # Set this from chart 2 and dump, use clustering script to finish up
@@ -78,9 +78,9 @@ if __name__ == '__main__':
     
     dim = 40
     filtr = ImportanceSelect(rfc,dim)
-    digitsX2 = filtr.fit_transform(digitsX,digitsY)
-    digits2 = pd.DataFrame(np.hstack((digitsX2,np.atleast_2d(digitsY).T)))
-    cols = list(range(digits2.shape[1]))
+    carsX2 = filtr.fit_transform(carsX,carsY)
+    cars2 = pd.DataFrame(np.hstack((carsX2,np.atleast_2d(carsY).T)))
+    cols = list(range(cars2.shape[1]))
     cols[-1] = 'Class'
-    digits2.columns = cols
-    digits2.to_hdf(out+'datasets.hdf','digits',complib='blosc',complevel=9)
+    cars2.columns = cols
+    cars2.to_hdf(out+'datasets.hdf','cars',complib='blosc',complevel=9)

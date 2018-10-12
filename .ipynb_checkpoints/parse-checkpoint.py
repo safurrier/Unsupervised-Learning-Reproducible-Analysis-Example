@@ -68,7 +68,7 @@ cars_df['doors'] = cars_df['doors'].replace({'5more':5}).apply(pd.to_numeric)
 
 one_hot_columns = pd.get_dummies(cars_df.select_dtypes(include='object')).rename(columns=lambda x: x.replace('-','_'))
 cars_df = pd.concat([one_hot_columns, cars_df[['doors','Class']]], axis=1)
-cars_df.to_hdf(OUT+'datasets.hdf','digits',complib='blosc',complevel=9)
+cars_df.to_hdf(OUT+'datasets.hdf','cars',complib='blosc',complevel=9)
 
 # digits = load_digits(return_X_y=True)
 # digitsX,digitsY = digits
