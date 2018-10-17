@@ -45,7 +45,7 @@ tmp.to_csv(out+'madelon scree.csv')
 
 pca = PCA(random_state=5)
 pca.fit(carsX)
-tmp = pd.Series(data = pca.explained_variance_,index = range(1,carsX.shape[1]+1))
+tmp = pd.Series(data = pca.explained_variance_, index = range(1,carsX.shape[1]+1))
 tmp.to_csv(out+'cars scree.csv')
 
 

@@ -54,7 +54,7 @@ for dim in dims:
 
 kurt = pd.Series(kurt) 
 kurt.to_csv(out+'cars scree.csv')
-raise
+#raise
 
 #%% Data for 2
 
