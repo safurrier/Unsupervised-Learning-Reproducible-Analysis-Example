@@ -21,7 +21,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import GridSearchCV
 import sys
 
-out = './{}/'.format(sys.argv[1])
+out = '{}/'.format(sys.argv[1])
 
 np.random.seed(0)
 cars = pd.read_hdf(out+'datasets.hdf','cars')

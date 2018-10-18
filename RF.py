@@ -28,8 +28,9 @@ if __name__ == '__main__':
     madelonX = StandardScaler().fit_transform(madelonX)
     carsX= StandardScaler().fit_transform(carsX)
     
-    clusters =  [2,5,10,15,20,25,30,35,40]
+    clusters =  [2,4,6,8,10,15,20,25,30,35,40]
     dims = [2,5,10,15,20,25,30,35,40,45,50,55,60]
+    cars_dims = [2,4,6,8,10,12,14,16,18,20]
     
     #%% data for 1
     
@@ -55,7 +56,7 @@ if __name__ == '__main__':
     tmp.to_csv(out+'Madelon dim red.csv')
     
     
-    grid ={'filter__n':dims,'NN__alpha':nn_reg,'NN__hidden_layer_sizes':nn_arch}  
+    grid ={'filter__n':cars_dims,'NN__alpha':nn_reg,'NN__hidden_layer_sizes':nn_arch}  
     mlp = MLPClassifier(activation='relu',max_iter=2000,early_stopping=True,random_state=5)
     pipe = Pipeline([('filter',filtr),('NN',mlp)])
     gs = GridSearchCV(pipe,grid,verbose=10,cv=5)
@@ -63,7 +64,7 @@ if __name__ == '__main__':
     gs.fit(carsX,carsY)
     tmp = pd.DataFrame(gs.cv_results_)
     tmp.to_csv(out+'cars dim red.csv')
-raise
+# raise
     #%% data for 3
     # Set this from chart 2 and dump, use clustering script to finish up
     dim = 20
@@ -76,7 +77,7 @@ raise
     madelon2.columns = cols
     madelon2.to_hdf(out+'datasets.hdf','madelon',complib='blosc',complevel=9)
     
-    dim = 40
+    dim = 16
     filtr = ImportanceSelect(rfc,dim)
     carsX2 = filtr.fit_transform(carsX,carsY)
     cars2 = pd.DataFrame(np.hstack((carsX2,np.atleast_2d(carsY).T)))

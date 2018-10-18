@@ -32,8 +32,9 @@ madelonY = madelon['Class'].copy().values
 madelonX = StandardScaler().fit_transform(madelonX)
 carsX= StandardScaler().fit_transform(carsX)
 
-clusters =  [2,5,10,15,20,25,30,35,40]
+clusters =  [2,4,6,8,10,15,20,25,30,35,40]
 dims = [2,5,10,15,20,25,30,35,40,45,50,55,60]
+cars_dims = [2,4,6,8,10,12,14,16,18,20]
 #raise
 #%% data for 1
 
@@ -45,7 +46,7 @@ tmp.to_csv(out+'madelon scree.csv')
 
 pca = PCA(random_state=5)
 pca.fit(carsX)
-tmp = pd.Series(data = pca.explained_variance_,index = range(1,carsX.shape[1]+1))
+tmp = pd.Series(data = pca.explained_variance_, index = range(1,carsX.shape[1]+1))
 tmp.to_csv(out+'cars scree.csv')
 
 
@@ -71,7 +72,7 @@ gs = GridSearchCV(pipe,grid,verbose=10,cv=5)
 gs.fit(carsX,carsY)
 tmp = pd.DataFrame(gs.cv_results_)
 tmp.to_csv(out+'cars dim red.csv')
-raise
+# raise
 #%% data for 3
 # Set this from chart 2 and dump, use clustering script to finish up
 dim = 5
@@ -84,7 +85,7 @@ cols[-1] = 'Class'
 madelon2.columns = cols
 madelon2.to_hdf(out+'datasets.hdf','madelon',complib='blosc',complevel=9)
 
-dim = 10
+dim = 12
 pca = PCA(n_components=dim,random_state=10)
 carsX2 = pca.fit_transform(carsX)
 cars2 = pd.DataFrame(np.hstack((carsX2,np.atleast_2d(carsY).T)))

@@ -1,0 +1,77 @@
+Steps to run. 
+
+1) Run parse.py to parse and load the Madelon and Cars data appropriately
+2) Run clustering.py/clustering_original.py to generate K Means and EM (Gaussian Mixture Models) for each of the datasets (Cars and Madelon)
+Depending on the script argument (BASE, ICA, PCA, etc) it will train these clustering algorithms using that data and output the following files
+with different metrics on the clusters:
+
+* SSE
+    * The SSE scoring for the K Means clustering for Cars and Madelon
+* loglikelihood
+    * The loglikelihood scoring for the EM (Guassian Mixture Modelling) clustering for Cars and Madelon    
+* {dataset} acc
+    * The accuracy of the predictions using the clusters as features   
+* {dataset} adjMI
+    * The adjusted mutual information between the clusters and the target class.
+    * See [sklearn docs](http://scikit-learn.org/stable/modules/generated/sklearn.metrics.adjusted_mutual_info_score.html) for details
+    * Adjusted for chance in that clusters with higher counts usually have higher MI
+    * Actual Metric is AMI(U, V) = [MI(U, V) - E(MI(U, V))] / [avg(H(U), H(V)) - E(MI(U, V))]
+* {dataset} GMM
+    * The NN grid search results using the EM (GaussianMixtureModel) clusters. Includes fit time, mean cv score and the hyperparameters for 
+    the NN (alpha, hidden layer sizes) and clustering (number of components)
+* {dataset} Kmeans
+    * The NN grid search results using the EM (GaussianMixtureModel) clusters. Includes fit time, mean cv score and the hyperparameters for 
+    the NN (alpha, hidden layer sizes) and clustering (number of components)    
+* {dataset} 2D
+    * TSNE projection of the dataset into 2 dimensions. To visualize on human understandable 2 dimensions. Default hyper parameters
+    
+3) Run each dimension reduction/unsupervised learning script to produce files with different metrics based on which algorithm was run:
+
+* PCA
+    * {dataset} scree.csv
+        * The first column is the rank of the compoents
+        * Second column is eigvenvalue (aka the amount of explained variance by that component)
+    * {dataset} dim red.csv
+        * NN grid search results over number of components used for PCA    
+        
+* ICA
+    * {dataset} scree.csv
+        * The first column is the number of the compoents
+        * Second column is mean absolute kurtosis of those components. I'm guessing the higher it is the more independent the total transformation?
+        * [This link](https://stats.stackexchange.com/questions/164872/the-independence-in-independent-component-analysis-intuitive-explanation) might be helpful not sure        
+    * {dataset} dim red.csv
+        * NN grid search results over number of components used for ICA
+        
+* RP
+    This script does a random sparse projection and then takes the correlation between the euclidean pairwise distances of the random projection and the original data
+    * {dataset} scree1.csv
+        * The first column/index is the number of the components used in the random projection
+        * Columns 2-10 are 10 iterations of the correlation between the euclidean pairwise distances of the random projection and the original data
+        * Avg Columns 2-10 to get an avg correlation between pairwise euclidean distance
+        * 10 runs done to reduce variance from the random part of random projection
+    * {dataset} scree2.csv
+        * The first column/index is the number of the components used in the random projection
+        * Columns 2-10 are 10 iterations of the reconstruction error of the projected data
+            * Reconstruction error is computed by:
+                1) Taking the Comp (Moore-Penrose) pseudo-inverse of the projection matrix.
+                2) Using the psuedo inverse to reconstruct the matrix with the projection:
+                    * (psinv dot product with projection) and taking the dot product of that with the original data X
+                3) Reconstruction error is the (original data - reconstructed)^2 
+
+        * Avg Columns 2-10 to get an avg correlation between pairwise euclidean distance
+        * 10 runs done to reduce variance from the random part of random projection        
+    * {dataset} dim red.csv
+        * NN grid search results over number of components used for RP        
+        
+## Not sure this is a requirement for the hw. Possibly skip this and return to it if there's time.         
+* RF (Random Forest Feature Selection)
+    * {dataset} scree.csv
+        * The first column is the rank of the Random Forest selected feature importance
+        * Second column is the feature importance score
+    * {dataset} dim red.csv
+        * NN grid search results over number of features based on rank (e.g. 5 will be the 5 most important features selected)
+        * Number of features is denoted by column param__filter_n
+        
+Each of the three unsupervised learning techniques and RF raises after the grid search. Must set the optimal number of components as dims for step 3. This will load the transformation using the ideal number of components (find from grid search, likely the optimal CV score from the NN using that number of components)        
+
+4) Once the ideal number of components for PCA/ICA/RP have been set and used, run the clustering.py with the first argument as PCA/ICA/RP to generate the datasets from step 1 but with PCA/ICA/RP 

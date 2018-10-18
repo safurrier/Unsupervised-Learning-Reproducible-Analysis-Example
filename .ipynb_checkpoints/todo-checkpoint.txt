@@ -1,6 +1,0 @@
-To Do
-
-1. Rerun ICA for the grid search to complete
-
-2. Figure out how the script relates to each step of the hw.
-. Figure out what each output file is. 

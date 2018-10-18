@@ -25,8 +25,9 @@ madelonY = madelon['Class'].copy().values
 madelonX = StandardScaler().fit_transform(madelonX)
 carsX= StandardScaler().fit_transform(carsX)
 
-clusters =  [2,5,10,15,20,25,30,35,40]
+clusters =  [2,4,6,8,10,15,20,25,30,35,40]
 dims = [2,5,10,15,20,25,30,35,40,45,50,55,60]
+cars_dims = [2,4,6,8,10,12,14,16,18,20]
 #raise
 #%% data for 1
 
@@ -45,7 +46,7 @@ kurt.to_csv(out+'madelon scree.csv')
 
 ica = FastICA(random_state=5)
 kurt = {}
-for dim in dims:
+for dim in cars_dims:
     ica.set_params(n_components=dim)
     tmp = ica.fit_transform(carsX)
     tmp = pd.DataFrame(tmp)
@@ -69,7 +70,7 @@ tmp = pd.DataFrame(gs.cv_results_)
 tmp.to_csv(out+'Madelon dim red.csv')
 
 
-grid ={'ica__n_components':dims,'NN__alpha':nn_reg,'NN__hidden_layer_sizes':nn_arch}
+grid ={'ica__n_components':cars_dims,'NN__alpha':nn_reg,'NN__hidden_layer_sizes':nn_arch}
 ica = FastICA(random_state=5)       
 mlp = MLPClassifier(activation='relu',max_iter=2000,early_stopping=True,random_state=5)
 pipe = Pipeline([('ica',ica),('NN',mlp)])
@@ -78,10 +79,10 @@ gs = GridSearchCV(pipe,grid,verbose=10,cv=5)
 gs.fit(carsX,carsY)
 tmp = pd.DataFrame(gs.cv_results_)
 tmp.to_csv(out+'cars dim red.csv')
-raise
+# raise
 #%% data for 3
 # Set this from chart 2 and dump, use clustering script to finish up
-dim = 45
+dim = 15
 ica = FastICA(n_components=dim,random_state=10)
 
 madelonX2 = ica.fit_transform(madelonX)
@@ -91,7 +92,7 @@ cols[-1] = 'Class'
 madelon2.columns = cols
 madelon2.to_hdf(out+'datasets.hdf','madelon',complib='blosc',complevel=9)
 
-dim = 60
+dim = 14
 ica = FastICA(n_components=dim,random_state=10)
 carsX2 = ica.fit_transform(carsX)
 cars2 = pd.DataFrame(np.hstack((carsX2,np.atleast_2d(carsY).T)))

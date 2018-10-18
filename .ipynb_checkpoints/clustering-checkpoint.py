@@ -21,12 +21,12 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import GridSearchCV
 import sys
 
-out = './{}/'.format(sys.argv[1])
+out = '{}/'.format(sys.argv[1])
 
 np.random.seed(0)
-digits = pd.read_hdf(out+'datasets.hdf','digits')
-digitsX = digits.drop('Class',1).copy().values
-digitsY = digits['Class'].copy().values
+cars = pd.read_hdf(out+'datasets.hdf','cars')
+carsX = cars.drop('Class',1).copy().values
+carsY = cars['Class'].copy().values
 
 madelon = pd.read_hdf(out+'datasets.hdf','madelon')        
 madelonX = madelon.drop('Class',1).copy().values
@@ -34,7 +34,7 @@ madelonY = madelon['Class'].copy().values
 
 
 madelonX = StandardScaler().fit_transform(madelonX)
-digitsX= StandardScaler().fit_transform(digitsX)
+carsX= StandardScaler().fit_transform(carsX)
 
 clusters =  [2,5,10,15,20,25,30,35,40]
 
@@ -59,14 +59,14 @@ for k in clusters:
     adjMI[k]['Madelon']['Kmeans'] = ami(madelonY,km.predict(madelonX))
     adjMI[k]['Madelon']['GMM'] = ami(madelonY,gmm.predict(madelonX))
     
-    km.fit(digitsX)
-    gmm.fit(digitsX)
-    SSE[k]['Digits'] = km.score(digitsX)
-    ll[k]['Digits'] = gmm.score(digitsX)
-    acc[k]['Digits']['Kmeans'] = cluster_acc(digitsY,km.predict(digitsX))
-    acc[k]['Digits']['GMM'] = cluster_acc(digitsY,gmm.predict(digitsX))
-    adjMI[k]['Digits']['Kmeans'] = ami(digitsY,km.predict(digitsX))
-    adjMI[k]['Digits']['GMM'] = ami(digitsY,gmm.predict(digitsX))
+    km.fit(carsX)
+    gmm.fit(carsX)
+    SSE[k]['cars'] = km.score(carsX)
+    ll[k]['cars'] = gmm.score(carsX)
+    acc[k]['cars']['Kmeans'] = cluster_acc(carsY,km.predict(carsX))
+    acc[k]['cars']['GMM'] = cluster_acc(carsY,gmm.predict(carsX))
+    adjMI[k]['cars']['Kmeans'] = ami(carsY,km.predict(carsX))
+    adjMI[k]['cars']['GMM'] = ami(carsY,gmm.predict(carsX))
     print(k, clock()-st)
     
     
@@ -80,9 +80,9 @@ adjMI = pd.Panel(adjMI)
 
 SSE.to_csv(out+'SSE.csv')
 ll.to_csv(out+'logliklihood.csv')
-acc.ix[:,:,'Digits'].to_csv(out+'Digits acc.csv')
+acc.ix[:,:,'cars'].to_csv(out+'cars acc.csv')
 acc.ix[:,:,'Madelon'].to_csv(out+'Madelon acc.csv')
-adjMI.ix[:,:,'Digits'].to_csv(out+'Digits adjMI.csv')
+adjMI.ix[:,:,'cars'].to_csv(out+'cars adjMI.csv')
 adjMI.ix[:,:,'Madelon'].to_csv(out+'Madelon adjMI.csv')
 
 
@@ -118,9 +118,9 @@ km = kmeans(random_state=5)
 pipe = Pipeline([('km',km),('NN',mlp)])
 gs = GridSearchCV(pipe,grid,verbose=10,cv=5)
 
-gs.fit(digitsX,digitsY)
+gs.fit(carsX,carsY)
 tmp = pd.DataFrame(gs.cv_results_)
-tmp.to_csv(out+'Digits cluster Kmeans.csv')
+tmp.to_csv(out+'cars cluster Kmeans.csv')
 
 
 grid ={'gmm__n_components':clusters,'NN__alpha':nn_reg,'NN__hidden_layer_sizes':nn_arch}
@@ -129,19 +129,19 @@ gmm = myGMM(random_state=5)
 pipe = Pipeline([('gmm',gmm),('NN',mlp)])
 gs = GridSearchCV(pipe,grid,verbose=10,cv=5)
 
-gs.fit(digitsX,digitsY)
+gs.fit(carsX,carsY)
 tmp = pd.DataFrame(gs.cv_results_)
-tmp.to_csv(out+'Digits cluster GMM.csv')
+tmp.to_csv(out+'cars cluster GMM.csv')
 
 
 # %% For chart 4/5
 madelonX2D = TSNE(verbose=10,random_state=5).fit_transform(madelonX)
-digitsX2D = TSNE(verbose=10,random_state=5).fit_transform(digitsX)
+carsX2D = TSNE(verbose=10,random_state=5).fit_transform(carsX)
 
 madelon2D = pd.DataFrame(np.hstack((madelonX2D,np.atleast_2d(madelonY).T)),columns=['x','y','target'])
-digits2D = pd.DataFrame(np.hstack((digitsX2D,np.atleast_2d(digitsY).T)),columns=['x','y','target'])
+cars2D = pd.DataFrame(np.hstack((carsX2D,np.atleast_2d(carsY).T)),columns=['x','y','target'])
 
 madelon2D.to_csv(out+'madelon2D.csv')
-digits2D.to_csv(out+'digits2D.csv')
+cars2D.to_csv(out+'cars2D.csv')
 
 
