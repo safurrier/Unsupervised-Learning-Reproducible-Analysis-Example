@@ -10,12 +10,17 @@ with different metrics on the clusters:
 * loglikelihood
     * The loglikelihood scoring for the EM (Guassian Mixture Modelling) clustering for Cars and Madelon    
 * {dataset} acc
-    * The accuracy of the predictions using the clusters as features   
+    * The accuracy of the predictions using the clusters as features 
+    * The way the accuracy is computed:
+        * For each cluster label, the majority class label for observations of that cluster are chosen as predictions
+        * Accuracy is simple accuracy sum(prediction == true_label)/# of true labels
+    * Index is clustering method, columns are number of clusters, values are accuracy
 * {dataset} adjMI
-    * The adjusted mutual information between the clusters and the target class.
+    * The adjusted mutual information between the cluster labels and the target class.
     * See [sklearn docs](http://scikit-learn.org/stable/modules/generated/sklearn.metrics.adjusted_mutual_info_score.html) for details
     * Adjusted for chance in that clusters with higher counts usually have higher MI
     * Actual Metric is AMI(U, V) = [MI(U, V) - E(MI(U, V))] / [avg(H(U), H(V)) - E(MI(U, V))]
+    * Index is clustering method, columns are number of clusters, values are adjusted mutual information
 * {dataset} GMM
     * The NN grid search results using the EM (GaussianMixtureModel) clusters. Includes fit time, mean cv score and the hyperparameters for 
     the NN (alpha, hidden layer sizes) and clustering (number of components)
