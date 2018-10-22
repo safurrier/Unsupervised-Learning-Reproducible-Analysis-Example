@@ -44,7 +44,7 @@ tmp.to_csv(out+'madelon scree.csv')
 
 
 tmp = defaultdict(dict)
-for i,dim in product(range(10),cars_dims):
+for i,dim in product(range(10),dims):
     rp = SparseRandomProjection(random_state=i, n_components=dim)
     tmp[dim][i] = pairwiseDistCorr(rp.fit_transform(carsX), carsX)
 tmp =pd.DataFrame(tmp).T
@@ -61,7 +61,7 @@ tmp.to_csv(out+'madelon scree2.csv')
 
 
 tmp = defaultdict(dict)
-for i,dim in product(range(10),cars_dims):
+for i,dim in product(range(10),dims):
     rp = SparseRandomProjection(random_state=i, n_components=dim)
     rp.fit(carsX)  
     tmp[dim][i] = reconstructionError(rp, carsX)
