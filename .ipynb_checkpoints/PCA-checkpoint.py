@@ -15,6 +15,8 @@ from matplotlib import cm
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.decomposition import PCA
+from helpers import reconstructionError
+
 
 out = './PCA/'
 cmap = cm.get_cmap('Spectral') 
@@ -33,8 +35,8 @@ madelonX = StandardScaler().fit_transform(madelonX)
 carsX= StandardScaler().fit_transform(carsX)
 
 clusters =  [2,4,6,8,10,15,20,25,30,35,40]
-dims = [2,5,10,15,20,25,30,35,40,45,50,55,60]
-cars_dims = [2,4,6,8,10,12,14,16,18,20]
+dims = [2,5,10,15,20,25,30,35,40,45,50,55,60,80,100,120]
+cars_dims = [2,4,6,8,10,12,14,16,18]
 #raise
 #%% data for 1
 
@@ -49,8 +51,30 @@ pca.fit(carsX)
 tmp = pd.Series(data = pca.explained_variance_, index = range(1,carsX.shape[1]+1))
 tmp.to_csv(out+'cars scree.csv')
 
+## Reconstruction error from components
+reconstruction_error = {}
+for dim in cars_dims:
+    pca.set_params(n_components=dim)
+    pca.fit(carsX)
+    reconstruction_error[dim] = reconstructionError(pca, carsX)
+    
+reconstruction_error_df = pd.DataFrame.from_dict(reconstruction_error, orient='index').reset_index()
+reconstruction_error_df.columns = ['N_Components', 'Reconstruction_Error']
+reconstruction_error_df.to_csv(out+'cars scree2.csv') 
 
-#%% Data for 2
+## Reconstruction error from components
+reconstruction_error = {}
+for dim in dims:
+    pca.set_params(n_components=dim)
+    pca.fit(madelonX)
+    reconstruction_error[dim] = reconstructionError(pca, madelonX)
+    
+reconstruction_error_df = pd.DataFrame.from_dict(reconstruction_error, orient='index').reset_index()
+reconstruction_error_df.columns = ['N_Components', 'Reconstruction_Error']
+reconstruction_error_df.to_csv(out+'madelon scree2.csv')  
+
+
+# #%% Data for 2
 
 grid ={'pca__n_components':dims,'NN__alpha':nn_reg,'NN__hidden_layer_sizes':nn_arch}
 pca = PCA(random_state=5)       

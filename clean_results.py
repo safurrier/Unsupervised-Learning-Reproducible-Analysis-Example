@@ -161,6 +161,8 @@ def main():
 
 
     all_algorithm_clustering_methods.to_hdf('results/results.hdf', key='clustering', complib='blosc',complevel=9)
+    all_algorithm_clustering_methods.to_csv('results/clustering_results.csv', index=False)
+
 
     # ## Compile T-SNE Results to one table
 
@@ -191,6 +193,7 @@ def main():
 
 
     tsne_df.to_hdf('results/results.hdf', key='tsne', complib='blosc',complevel=9)
+    tsne_df.to_csv('results/tsne_results.csv', index=False)
 
 
     # ## Compile GridSearch Results to one table
@@ -271,9 +274,99 @@ def main():
 
 
     clean_grid_search_df.to_hdf('results/results.hdf', key='grid_search', complib='blosc',complevel=9)
+    clean_grid_search_df.to_csv('results/grid_search_results.csv', index=False)
+    
+    def pull_cluster_quality_metrics(algorithm, dataset):
+        """Given a data unsupervised learning algorithm, dataset name and whether it's 
+        cluster related or not, pull grid search results"""
+        # Load the clustering data if necesary
+
+        # There's no dimension reduction for BASE data
+        if (algorithm != 'BASE') & (algorithm != 'RF'):
+            if algorithm == 'PCA':
+                scree1 = pd.read_csv(f'{algorithm}/{dataset} scree.csv', header=None)
+                metric = 'Explained_Variance'
+                scree1.columns=['N_Components', 'Value']
+                scree1['Metric'] = metric
+
+                scree2 = (pd.read_csv(f'{algorithm}/{dataset} scree2.csv').drop(columns='Unnamed: 0')
+                          .melt(id_vars='N_Components', var_name='Metric', value_name='Value'))
+
+                alg_metrics = pd.concat([scree1, scree2], sort=True)
+            elif algorithm == 'ICA':
+                scree1 = pd.read_csv(f'{algorithm}/{dataset} scree.csv', header=None)
+                metric = 'Avg_Component_Absolute_Kurtosis'
+                scree1.columns=['N_Components', 'Value']
+                scree1['Metric'] = metric
+
+                scree2 = (pd.read_csv(f'{algorithm}/{dataset} scree2.csv').drop(columns='Unnamed: 0')
+                          .melt(id_vars='N_Components', var_name='Metric', value_name='Value'))
+
+                alg_metrics = pd.concat([scree1, scree2], sort=True)            
+
+            elif algorithm == 'RP':
+                ### Correlation Metric
+                scree1 = pd.read_csv(f'{algorithm}/{dataset} scree.csv')            
+                # Compute average across 10 random projections
+                rp_metrics_avg_corr = pd.concat([scree1.iloc[:, 0], 
+                                                 scree1.iloc[:, 1:].apply(np.mean, axis=1)],
+                axis=1)
+                rp_metrics_avg_corr.columns = ['N_Components', 'Value']
+                # Compute Std. across 10 random projections
+                rp_metrics_avg_corr['Metric'] = 'Projected_Pairwise_Distance_10_Trial_Correlation_Avg'
+                rp_metrics_std_corr = pd.concat([scree1.iloc[:, 0], 
+                           scree1.iloc[:, 1:].apply(np.std, axis=1)],
+                            axis=1)
+                rp_metrics_std_corr.columns = ['N_Components', 'Value']
+                rp_metrics_std_corr['Metric'] = 'Projected_Pairwise_Distance_10_Trial_Correlation_Std'
+                rp_metrics = pd.concat([rp_metrics_avg_corr, rp_metrics_std_corr])
+
+                ### Reconstruction Error
+                scree2 = pd.read_csv(f'{algorithm}/{dataset} scree2.csv')            
+                # Compute average across 10 random projections
+                rp_avg_reconstruction_error = pd.concat([scree2.iloc[:, 0], 
+                                                 scree2.iloc[:, 1:].apply(np.mean, axis=1)],
+                axis=1)
+                rp_avg_reconstruction_error.columns = ['N_Components', 'Value']
+                # Compute Std. across 10 random projections
+                rp_avg_reconstruction_error['Metric'] = 'Reconstruction_Error'
+                rp_std_reconstruction_error = pd.concat([scree2.iloc[:, 0], 
+                           scree2.iloc[:, 1:].apply(np.std, axis=1)],
+                            axis=1)
+                rp_std_reconstruction_error.columns = ['N_Components', 'Value']
+                rp_std_reconstruction_error['Metric'] = 'Reconstruction_Error_Std'
+                rp_reconstruction_error_metrics = pd.concat([rp_avg_reconstruction_error, rp_std_reconstruction_error],
+                                                           sort=True)  
+
+                alg_metrics = pd.concat([rp_metrics, rp_reconstruction_error_metrics], sort=True) 
+
+            alg_metrics = alg_metrics.reset_index(drop=True)
+            alg_metrics['Data_Perspective'] = algorithm
+            alg_metrics['Dataset'] = dataset
+
+            column_order = ['Data_Perspective', 'Dataset',  'N_Components', 'Metric', 'Value', ]
+
+            return alg_metrics[column_order]
+
+        else:
+            print(f'No Component Metrics found for {algorithm} and {dataset}')
+            
+    component_quality_df = [pull_cluster_quality_metrics(algorithm, 'Cars') 
+                            for algorithm 
+                            in ['ICA', 'PCA', 'RP']] + [pull_cluster_quality_metrics(algorithm, 'Madelon')
+                                                                      for algorithm 
+                                                                      in ['ICA', 'PCA', 'RP']]
+
+
+
+    component_quality_df = pd.concat(component_quality_df).reset_index(drop=True)
+
+    component_quality_df.to_hdf('results/results.hdf', key='component_quality', complib='blosc',complevel=9)
+    component_quality_df.to_csv('results/component_quality.csv', index=False)
+    
     
     print('\n\nOutputted clustering metrics, tsne projections and grid search results (on dimensionality reduction and clusters)'
-         'to results.results.hdf using keys "clustering", "tsne", and "grid_search"\n\n'
+         'to results.results.hdf using keys "clustering", "tsne", "grid_search", and "component_quality" \n\n'
          )
 if __name__ == "__main__":
     main()

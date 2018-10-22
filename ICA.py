@@ -9,6 +9,7 @@ from helpers import nn_arch, nn_reg
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.decomposition import FastICA
+from helpers import reconstructionError
 
 out = './ICA/'
 
@@ -56,6 +57,29 @@ for dim in cars_dims:
 kurt = pd.Series(kurt) 
 kurt.to_csv(out+'cars scree.csv')
 #raise
+
+
+## Reconstruction error from components
+reconstruction_error = {}
+for dim in cars_dims:
+    ica.set_params(n_components=dim)
+    ica.fit(carsX)
+    reconstruction_error[dim] = reconstructionError(ica, carsX)
+    
+reconstruction_error_df = pd.DataFrame.from_dict(reconstruction_error, orient='index').reset_index()
+reconstruction_error_df.columns = ['N_Components', 'Reconstruction_Error']
+reconstruction_error_df.to_csv(out+'cars scree2.csv') 
+
+## Reconstruction error from components
+reconstruction_error = {}
+for dim in dims:
+    ica.set_params(n_components=dim)
+    ica.fit(madelonX)
+    reconstruction_error[dim] = reconstructionError(ica, madelonX)
+    
+reconstruction_error_df = pd.DataFrame.from_dict(reconstruction_error, orient='index').reset_index()
+reconstruction_error_df.columns = ['N_Components', 'Reconstruction_Error']
+reconstruction_error_df.to_csv(out+'madelon scree2.csv')  
 
 #%% Data for 2
 

@@ -80,9 +80,9 @@ of splits a feature is involved along with its average information gained across
 Each of the three unsupervised learning techniques and RF raises after the grid search.
 At this point proceed to step four:
 
-4) Run pull_best_n_components.py to find the optimal number of components for each unsupervised learning/feature transformation technique. By default the criteria for this is the number of components that resulted in the highest out of fold test accuracy using 10 fold cross validation. Must set the optimal number of components as dims in each UL script. This will load the transformation using the ideal number of components (find from grid search, likely the optimal CV score from the NN using that number of components) 
+4) Run pull_best_n_components.py to find the optimal number of components for each unsupervised learning/feature transformation technique. By default the criteria for this is the number of components that resulted in the highest out of fold test accuracy using 10 fold cross validation. Set the optimal number of components as dims in each the optimal_projections script. This will load the transformation using the ideal number of components (find from grid search, likely the optimal CV score from the NN using that number of components).
 
-5) Run the UL scripts again, and to save computation time comment out the parts of the code that have already run. This will record the optimal projection of the data using the number of components specified in step 4.
+5) Run optimal_projections.py to output the best projections. This will record the optimal projection of the data using the number of components specified in step 4.
 
 4) Once the ideal number of components for PCA/ICA/RP have been set and created, run the clustering.py with the first argument as PCA/ICA/RP to generate the datasets from step 1 but with PCA/ICA/RP 
 
