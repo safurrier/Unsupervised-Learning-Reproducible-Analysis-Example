@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Mar 16 10:38:28 2017
-
-@author: jtay
-"""
 
 #%% Imports
 import pandas as pd
@@ -136,13 +131,13 @@ tmp.to_csv(out+'cars cluster GMM.csv')
 
 # %% For chart 4/5
 # Madelon perplexity set to 50 b/c it's high dimensional and points likely not dense like Cars
-madelonX2D = TSNE(verbose=10, perplexity = 30, random_state=5).fit_transform(madelonX)
-carsX2D = TSNE(verbose=10, perplexity = 30, random_state=5).fit_transform(carsX)
+# madelonX2D = TSNE(verbose=10, perplexity = 30, random_state=5).fit_transform(madelonX)
+# carsX2D = TSNE(verbose=10, perplexity = 30, random_state=5).fit_transform(carsX)
 
-madelon2D = pd.DataFrame(np.hstack((madelonX2D,np.atleast_2d(madelonY).T)),columns=['x','y','target'])
-cars2D = pd.DataFrame(np.hstack((carsX2D,np.atleast_2d(carsY).T)),columns=['x','y','target'])
+# madelon2D = pd.DataFrame(np.hstack((madelonX2D,np.atleast_2d(madelonY).T)),columns=['x','y','target'])
+# cars2D = pd.DataFrame(np.hstack((carsX2D,np.atleast_2d(carsY).T)),columns=['x','y','target'])
 
-madelon2D.to_csv(out+'madelon2D.csv')
-cars2D.to_csv(out+'cars2D.csv')
+# madelon2D.to_csv(out+'madelon2D.csv')
+# cars2D.to_csv(out+'cars2D.csv')
 
 

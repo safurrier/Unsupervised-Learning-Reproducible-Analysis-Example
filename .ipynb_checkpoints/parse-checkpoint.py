@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 15 10:39:27 2017
-
-@author: jtay
-"""
-
 import pandas as pd
 import numpy as np
-from sklearn.datasets import load_digits
 import os 
 import sklearn.model_selection as ms
 

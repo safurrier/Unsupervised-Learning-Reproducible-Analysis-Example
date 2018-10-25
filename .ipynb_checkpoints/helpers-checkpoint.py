@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Mar 16 10:47:56 2017
-
-@author: jtay
-"""
 
 import numpy as np
 from collections import Counter
