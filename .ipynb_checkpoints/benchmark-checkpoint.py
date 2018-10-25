@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Mar 20 17:17:14 2017
-
-@author: JTay
-"""
 
 import pandas as pd
 import numpy as np
@@ -16,17 +11,17 @@ from sklearn.model_selection import GridSearchCV
 
 out = './BASE/'
 np.random.seed(0)
-digits = pd.read_hdf('./BASE/datasets.hdf','digits')
-digitsX = digits.drop('Class',1).copy().values
-digitsY = digits['Class'].copy().values
+cars = pd.read_hdf('./BASE/datasets.hdf','cars')
+carsX = cars.drop('Class',1).copy().values
+carsY = cars['Class'].copy().values
 
-madelon = pd.read_hdf('./BASE/datasets.hdf','madelon')        
+madelon = pd.read_hdf('./BASE/datasets.hdf','madelon')
 madelonX = madelon.drop('Class',1).copy().values
 madelonY = madelon['Class'].copy().values
 
 
 madelonX = StandardScaler().fit_transform(madelonX)
-digitsX= StandardScaler().fit_transform(digitsX)
+carsX= StandardScaler().fit_transform(carsX)
 
 #%% benchmarking for chart type 2
 
@@ -44,7 +39,7 @@ mlp = MLPClassifier(activation='relu',max_iter=2000,early_stopping=True,random_s
 pipe = Pipeline([('NN',mlp)])
 gs = GridSearchCV(pipe,grid,verbose=10,cv=5)
 
-gs.fit(digitsX,digitsY)
+gs.fit(carsX,carsY)
 tmp = pd.DataFrame(gs.cv_results_)
-tmp.to_csv(out+'digits NN bmk.csv')
-raise
+tmp.to_csv(out+'cars NN bmk.csv')
+
