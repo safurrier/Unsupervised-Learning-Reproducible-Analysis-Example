@@ -1,0 +1,37 @@
+﻿Data_Perspective,Dataset,Data_Type,Metric,Optimal_Number,Metric_Rank
+PCA,Cars,Feature_Transformation,Reconstruction Error,14,1
+RP,Cars,Feature_Transformation,Reconstruction Error,20,2
+ICA,Cars,Feature_Transformation,Reconstruction Error,14,1
+PCA,Madelon,Feature_Transformation,Reconstruction Error,20,1
+ICA,Madelon,Feature_Transformation,Reconstruction Error,20,1
+RP,Madelon,Feature_Transformation,Reconstruction Error,20,1
+PCA,Cars,Feature_Transformation,Information Quality,8,1
+RP,Cars,Feature_Transformation,Information Quality,5,1
+ICA,Cars,Feature_Transformation,Information Quality,20,1
+PCA,Madelon,Feature_Transformation,Information Quality,5,1
+ICA,Madelon,Feature_Transformation,Information Quality,5,1
+RP,Madelon,Feature_Transformation,Information Quality,20,1
+RF,Madelon,Feature_Transformation,Test Set Accuracy,20,1
+PCA,Cars,Feature_Transformation,Test Set Accuracy,12,1
+RF,Cars,Feature_Transformation,Test Set Accuracy,16,3
+RP,Cars,Feature_Transformation,Test Set Accuracy,14,4
+PCA,Madelon,Feature_Transformation,Test Set Accuracy,5,2
+ICA,Cars,Feature_Transformation,Test Set Accuracy,14,4
+ICA,Madelon,Feature_Transformation,Test Set Accuracy,15,3
+RP,Madelon,Feature_Transformation,Test Set Accuracy,45,4
+PCA,Cars,Cluster,Information Quality,10,1
+RF,Cars,Cluster,Information Quality,15,3
+RP,Cars,Cluster,Information Quality,15,4
+ICA,Cars,Cluster,Information Quality,15,2
+RF,Madelon,Cluster,Information Quality,10,2
+PCA,Madelon,Cluster,Information Quality,10,1
+ICA,Madelon,Cluster,Information Quality,10,1
+RP,Madelon,Cluster,Information Quality,2,4
+PCA,Cars,Cluster,Test Set Accuracy,37,1
+RF,Cars,Cluster,Test Set Accuracy,20,3
+RP,Cars,Cluster,Test Set Accuracy,2,4
+ICA,Cars,Cluster,Test Set Accuracy,20,2
+RF,Madelon,Cluster,Test Set Accuracy,40,2
+PCA,Madelon,Cluster,Test Set Accuracy,40,1
+ICA,Madelon,Cluster,Test Set Accuracy,40,3
+RP,Madelon,Cluster,Test Set Accuracy,2,4

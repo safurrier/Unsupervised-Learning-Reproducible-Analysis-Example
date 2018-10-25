@@ -1,0 +1,13 @@
+﻿Reconstruction Optimal Components,,,,,,
+,,,,,,
+Dataset,Method,Number of Components,,Dataset,Method,Number of Components
+Cars,PCA,14,,Madelon,PCA,20
+Cars,ICA,14,,Madelon,ICA,20
+Cars,RP,20,,Madelon,RP,20
+,,,,,,
+,,,,,,
+Quality Metrics Optimal Components,,,,,,
+Dataset,Method,Number of Components,,Dataset,Method,Number of Components
+Cars,PCA,8,,Madelon,PCA,5
+Cars,ICA,5,,Madelon,ICA,5
+Cars,RP,20,,Madelon,RP,20
