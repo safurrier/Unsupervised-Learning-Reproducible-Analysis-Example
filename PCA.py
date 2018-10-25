@@ -99,21 +99,21 @@ tmp.to_csv(out+'cars dim red.csv')
 # raise
 #%% data for 3
 # Set this from chart 2 and dump, use clustering script to finish up
-dim = 5
-pca = PCA(n_components=dim,random_state=10)
+# dim = 5
+# pca = PCA(n_components=dim,random_state=10)
 
-madelonX2 = pca.fit_transform(madelonX)
-madelon2 = pd.DataFrame(np.hstack((madelonX2,np.atleast_2d(madelonY).T)))
-cols = list(range(madelon2.shape[1]))
-cols[-1] = 'Class'
-madelon2.columns = cols
-madelon2.to_hdf(out+'datasets.hdf','madelon',complib='blosc',complevel=9)
+# madelonX2 = pca.fit_transform(madelonX)
+# madelon2 = pd.DataFrame(np.hstack((madelonX2,np.atleast_2d(madelonY).T)))
+# cols = list(range(madelon2.shape[1]))
+# cols[-1] = 'Class'
+# madelon2.columns = cols
+# madelon2.to_hdf(out+'datasets.hdf','madelon',complib='blosc',complevel=9)
 
-dim = 12
-pca = PCA(n_components=dim,random_state=10)
-carsX2 = pca.fit_transform(carsX)
-cars2 = pd.DataFrame(np.hstack((carsX2,np.atleast_2d(carsY).T)))
-cols = list(range(cars2.shape[1]))
-cols[-1] = 'Class'
-cars2.columns = cols
-cars2.to_hdf(out+'datasets.hdf','cars',complib='blosc',complevel=9)
+# dim = 12
+# pca = PCA(n_components=dim,random_state=10)
+# carsX2 = pca.fit_transform(carsX)
+# cars2 = pd.DataFrame(np.hstack((carsX2,np.atleast_2d(carsY).T)))
+# cols = list(range(cars2.shape[1]))
+# cols[-1] = 'Class'
+# cars2.columns = cols
+# cars2.to_hdf(out+'datasets.hdf','cars',complib='blosc',complevel=9)

@@ -368,6 +368,7 @@ def main():
     print('\n\nOutputted clustering metrics, tsne projections and grid search results (on dimensionality reduction and clusters)'
          'to results.results.hdf using keys "clustering", "tsne", "grid_search", and "component_quality" \n\n'
          )
+
 if __name__ == "__main__":
     main()
 

@@ -67,21 +67,21 @@ if __name__ == '__main__':
 # raise
     #%% data for 3
     # Set this from chart 2 and dump, use clustering script to finish up
-    dim = 20
-    filtr = ImportanceSelect(rfc,dim)
+#     dim = 20
+#     filtr = ImportanceSelect(rfc,dim)
     
-    madelonX2 = filtr.fit_transform(madelonX,madelonY)
-    madelon2 = pd.DataFrame(np.hstack((madelonX2,np.atleast_2d(madelonY).T)))
-    cols = list(range(madelon2.shape[1]))
-    cols[-1] = 'Class'
-    madelon2.columns = cols
-    madelon2.to_hdf(out+'datasets.hdf','madelon',complib='blosc',complevel=9)
+#     madelonX2 = filtr.fit_transform(madelonX,madelonY)
+#     madelon2 = pd.DataFrame(np.hstack((madelonX2,np.atleast_2d(madelonY).T)))
+#     cols = list(range(madelon2.shape[1]))
+#     cols[-1] = 'Class'
+#     madelon2.columns = cols
+#     madelon2.to_hdf(out+'datasets.hdf','madelon',complib='blosc',complevel=9)
     
-    dim = 16
-    filtr = ImportanceSelect(rfc,dim)
-    carsX2 = filtr.fit_transform(carsX,carsY)
-    cars2 = pd.DataFrame(np.hstack((carsX2,np.atleast_2d(carsY).T)))
-    cols = list(range(cars2.shape[1]))
-    cols[-1] = 'Class'
-    cars2.columns = cols
-    cars2.to_hdf(out+'datasets.hdf','cars',complib='blosc',complevel=9)
+#     dim = 16
+#     filtr = ImportanceSelect(rfc,dim)
+#     carsX2 = filtr.fit_transform(carsX,carsY)
+#     cars2 = pd.DataFrame(np.hstack((carsX2,np.atleast_2d(carsY).T)))
+#     cols = list(range(cars2.shape[1]))
+#     cols[-1] = 'Class'
+#     cars2.columns = cols
+#     cars2.to_hdf(out+'datasets.hdf','cars',complib='blosc',complevel=9)

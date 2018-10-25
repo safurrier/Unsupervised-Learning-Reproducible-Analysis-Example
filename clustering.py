@@ -38,7 +38,7 @@ carsX= StandardScaler().fit_transform(carsX)
 
 clusters =  [2,5,10,15,20,25,30,35,40]
 
-#%% Data for 1-3
+# #%% Data for 1-3
 SSE = defaultdict(dict)
 ll = defaultdict(dict)
 acc = defaultdict(lambda: defaultdict(dict))
@@ -135,8 +135,9 @@ tmp.to_csv(out+'cars cluster GMM.csv')
 
 
 # %% For chart 4/5
-madelonX2D = TSNE(verbose=10,random_state=5).fit_transform(madelonX)
-carsX2D = TSNE(verbose=10,random_state=5).fit_transform(carsX)
+# Madelon perplexity set to 50 b/c it's high dimensional and points likely not dense like Cars
+madelonX2D = TSNE(verbose=10, perplexity = 30, random_state=5).fit_transform(madelonX)
+carsX2D = TSNE(verbose=10, perplexity = 30, random_state=5).fit_transform(carsX)
 
 madelon2D = pd.DataFrame(np.hstack((madelonX2D,np.atleast_2d(madelonY).T)),columns=['x','y','target'])
 cars2D = pd.DataFrame(np.hstack((carsX2D,np.atleast_2d(carsY).T)),columns=['x','y','target'])

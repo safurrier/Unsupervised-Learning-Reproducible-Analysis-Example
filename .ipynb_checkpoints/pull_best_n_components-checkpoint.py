@@ -43,20 +43,36 @@ if path not in sys.path:
 
 
 # ## Load in CV results
-algorithms = ['ICA', 'PCA', 'RP', 'RF']
-datasets = ['cars', 'madelon']
-output_path = 'results/best_N_components.csv'
+algorithms = ['BASE','ICA', 'PCA', 'RP', 'RF']
+datasets = ['Cars', 'Madelon']
+output_path = 'results/best_N_components_by_test_score.csv'
 
 records = []
 for algorithm in algorithms:
     for dataset in datasets:
-        tmp_csv_scores = pd.read_csv(f'{algorithm}/{dataset} dim red.csv')
-        best_n_components = tmp_csv_scores.sort_values(by='mean_test_score', ascending=False).filter(regex='components|filter').values[0][0]
-        best_acc = tmp_csv_scores.sort_values(by='mean_test_score', ascending=False).mean_test_score.values[0]
-        records.append((algorithm, dataset, best_n_components, best_acc))
+        # For base data benchmark
+        if algorithm == 'BASE':
+            benchmark = pd.read_csv(f'{algorithm}/{dataset} NN bmk.csv')
+            best_acc = benchmark.sort_values(by='mean_test_score', ascending=False).mean_test_score.values[0]
+            if dataset == 'Cars':
+                best_n_components = 19
+            if dataset == 'Madelon':
+                best_n_components = 500
+            records.append((algorithm, dataset, best_n_components, best_acc))
+        # For feature transform/selected data
+        elif algorithm != 'BASE':
+            tmp_csv_scores = pd.read_csv(f'{algorithm}/{dataset} dim red.csv')
+            best_n_components = tmp_csv_scores.sort_values(by='mean_test_score', ascending=False).filter(regex='components|filter').values[0][0]
+            best_acc = tmp_csv_scores.sort_values(by='mean_test_score', ascending=False).mean_test_score.values[0]
+            records.append((algorithm, dataset, best_n_components, best_acc))
         
-        
-best_N_components = pd.DataFrame(records, columns=['Algorithm', 'Dataset', 'N_Components_Maximizing_Test_Accuracy', 'Best_Test_Acc'])        
+cols = ['Data_Perspective', 'Dataset', 'N_Components', 'Best_Test_Acc']        
+best_N_components = pd.DataFrame(records, columns=cols)
+
+# ## add results from previous analysis using base data
+# baseline_results = pd.DataFrame([('BASE', 'cars', '19', .5159), ('BASE', 'madelon', '31', .7628)], columns=cols)
+# best_N_components = pd.concat([best_N_components, baseline_results])
+
 best_N_components.to_csv(output_path, index=False)
 
 

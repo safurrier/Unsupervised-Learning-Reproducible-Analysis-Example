@@ -46,7 +46,7 @@ cols[-1] = 'Class'
 madelon2.columns = cols
 madelon2.to_hdf(out+'/datasets.hdf','madelon',complib='blosc',complevel=9)
 
-dim = 12
+dim = 9
 ica = FastICA(n_components=dim,random_state=10)
 carsX2 = ica.fit_transform(carsX)
 cars2 = pd.DataFrame(np.hstack((carsX2,np.atleast_2d(carsY).T)))
